@@ -1,15 +1,15 @@
-import { NavigationContainer } from "@react-navigation/native";
+import {NavigationContainer} from '@react-navigation/native';
 
-import LoginNavigator from "./LoginNavigator";
-import ArticlesNavigator from "./ArticlesNavigator";
+import LoginNavigator from './LoginNavigator';
+import ArticlesNavigator from './ArticlesNavigator';
 
 const AppContainerNavigator = () => {
-    const token = true ;
-    return(
-        <NavigationContainer>
-            {token ? <ArticlesNavigator/> : <LoginNavigator/>}
-        </NavigationContainer>
-    );
-}
+  const token = false;
+  return (
+    <NavigationContainer>
+      {token ? <ArticlesNavigator /> : <LoginNavigator />}
+    </NavigationContainer>
+  );
+};
 
 export default AppContainerNavigator;
