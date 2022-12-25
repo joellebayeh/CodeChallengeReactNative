@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-
+import {useSelector, useDispatch} from 'react-redux';
 import {
   View,
   StyleSheet,
@@ -11,12 +11,15 @@ import {
   Text,
   TouchableOpacity,
   TouchableNativeFeedback,
+  ActivityIndicator,
 } from 'react-native';
 import {Formik} from 'formik';
 import * as yup from 'yup';
-
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
+
+import Colors from "../constants/colors"
+import {PostLoginAction} from '../store/actions/PostLoginAction';
 
 const {width} = Dimensions.get('window');
 const aspectRatio = 183 / 275;
@@ -28,10 +31,18 @@ const validationShema = yup.object({
 });
 
 const LoginScreen = () => {
+  const dispatch = useDispatch();
+  const {isLoggedIn, error, loading} = useSelector(state => state.login);
+
   const [showPassword, setShowPassword] = useState(false);
   const ShowPasswordHandler = () => {
     setShowPassword(!showPassword);
   };
+
+  const SubmitHandle = values => {
+    dispatch(PostLoginAction(values));
+  };
+  
   return (
     <React.Fragment>
       <StatusBar hidden />
@@ -39,7 +50,7 @@ const LoginScreen = () => {
         <View style={[styles.imageContainer, {borderBottomLeftRadius: 80}]}>
           <Image
             style={{width, height}}
-            source={require('../assets/download.jpg')}
+            source={require('../assets/image.jpg')}
           />
         </View>
 
@@ -51,12 +62,14 @@ const LoginScreen = () => {
             }}
             validateOnMount={true}
             validationSchema={validationShema}
-            onSubmit={values => console.log(values)}>
+            onSubmit={(values, actions) => {
+              SubmitHandle(values);
+              actions.resetForm();
+            }}>
             {({
               errors,
               status,
               touched,
-              isValid,
               values,
               handleChange,
               handleSubmit,
@@ -64,7 +77,7 @@ const LoginScreen = () => {
             }) => (
               <ImageBackground
                 style={styles.imageBg}
-                source={require('../assets/download.jpg')}>
+                source={require('../assets/image.jpg')}>
                 <View style={styles.container}>
                   <View style={styles.textContainer}>
                     <Text style={styles.title}>Welcome</Text>
@@ -75,7 +88,11 @@ const LoginScreen = () => {
                   <View style={styles.inputContainer}>
                     <View style={styles.inputContainerOne}>
                       <View style={styles.iconContainer}>
-                        <Icon name="user-circle" size={25} color="rgb(66, 47, 148)"/>
+                        <Icon
+                          name="user-circle"
+                          size={25}
+                          color= {Colors.blue2}
+                        />
                       </View>
                       <View style={styles.inputContainerTwo}>
                         <TextInput
@@ -84,6 +101,7 @@ const LoginScreen = () => {
                           value={values.username}
                           onBlur={handleBlur('username')}
                           onChangeText={handleChange('username')}
+                          returnKeyType='next'
                         />
                       </View>
                     </View>
@@ -92,7 +110,11 @@ const LoginScreen = () => {
                     ) : null}
                     <View style={styles.inputContainerOne}>
                       <View style={styles.iconContainer}>
-                        <Feather name="key" size={25} color="rgb(66, 47, 148)" />
+                        <Feather
+                          name="key"
+                          size={25}
+                          color= {Colors.blue2}
+                        />
                       </View>
                       <View style={styles.inputContainerTwo}>
                         <TextInput
@@ -105,15 +127,22 @@ const LoginScreen = () => {
                         />
                       </View>
                       <View style={styles.iconContainer}>
-                         <TouchableNativeFeedback onPress={ShowPasswordHandler}>
-                        {!showPassword ? (
-                          <Feather name="eye-off" color="rgb(66, 47, 148)" size={25} />
-                        ) : (
-                          <Feather name="eye" color="rgb(66, 47, 148)" size={25} />
-                        )}
-                      </TouchableNativeFeedback>
+                        <TouchableNativeFeedback onPress={ShowPasswordHandler}>
+                          {!showPassword ? (
+                            <Feather
+                              name="eye-off"
+                              color= {Colors.blue2}
+                              size={25}
+                            />
+                          ) : (
+                            <Feather
+                              name="eye"
+                              color= {Colors.blue2}
+                              size={25}
+                            />
+                          )}
+                        </TouchableNativeFeedback>
                       </View>
-                     
                     </View>
                     {errors.password && touched.password ? (
                       <Text style={styles.errors}>{errors.password}</Text>
@@ -123,15 +152,31 @@ const LoginScreen = () => {
                     style={[
                       styles.button,
                       {
-                        backgroundColor: isValid ? 'rgb(66, 47, 148)' : 'grey',
+                        backgroundColor:
+                          !values.username || !values.password || loading
+                            ? Colors.grey
+                            : Colors.blue2,
                       },
                     ]}>
                     <TouchableOpacity
-                      disabled={!isValid}
+                      disabled={!values.username || !values.password || loading}
                       onPress={handleSubmit}>
                       <Text style={styles.buttonText}>Login</Text>
                     </TouchableOpacity>
                   </View>
+                  {loading && (
+                    <View>
+                      <ActivityIndicator
+                        size="large"
+                        color={Colors.blue}
+                      />
+                    </View>
+                  )}
+                  {error && (
+                    <View >
+                      <Text style={[styles.errors,{marginTop:10}]}>{error}</Text>
+                    </View>
+                  )}
                 </View>
               </ImageBackground>
             )}
@@ -170,7 +215,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 30,
-    color: 'black',
+    color: Colors.black,
     textAlign: 'center',
   },
   hint: {
@@ -195,18 +240,18 @@ const styles = StyleSheet.create({
     margin: 10,
     paddingHorizontal: 2,
     paddingVertical: 5,
-    borderBottomColor: '#ccc',
+    borderBottomColor: Colors.blue,
     borderBottomWidth: 1,
-    borderRightColor: '#ccc',
+    borderRightColor: Colors.blue,
     borderRightWidth: 2,
     borderBottomRightRadius: 80,
-    textAlign: 'center',
+    fontSize:18
   },
   button: {
     marginVertical: 5,
     borderRadius: 80,
     width: '35%',
-    borderColor: 'black',
+    // borderColor: 'black',
   },
   buttonText: {
     color: 'white',
@@ -216,7 +261,7 @@ const styles = StyleSheet.create({
   },
   errors: {
     fontSize: 13,
-    color: 'rgb(212, 37, 37)',
+    color: Colors.red,
     fontWeight: 'bold',
     marginBottom: 7,
     textAlign: 'center',
