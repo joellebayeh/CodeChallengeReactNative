@@ -8,6 +8,7 @@ import ArticlesNavigator from './ArticlesNavigator';
 
 const AppContainerNavigator = () => {
   const {accessToken} = useSelector(state => state.login);
+  // const token = true ;
   return (
     <NavigationContainer>
       {accessToken ? <ArticlesNavigator /> : <LoginNavigator />}
