@@ -1,4 +1,7 @@
 import React, {useState} from 'react';
+import {Formik} from 'formik';
+import * as yup from 'yup';
+
 import {useSelector, useDispatch} from 'react-redux';
 import {
   View,
@@ -7,19 +10,18 @@ import {
   Dimensions,
   StatusBar,
   ImageBackground,
-  TextInput,
   Text,
-  TouchableOpacity,
   TouchableNativeFeedback,
-  ActivityIndicator,
 } from 'react-native';
-import {Formik} from 'formik';
-import * as yup from 'yup';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 
-import Colors from "../constants/colors"
+
 import {PostLoginAction} from '../store/actions/PostLoginAction';
+import Colors from '../constants/colors';
+import Spinner from '../components/UI/Spinner';
+import MyInput from '../components/UI/MyInput';
+import MyButton from '../components/UI/MyButton';
 
 const {width} = Dimensions.get('window');
 const aspectRatio = 183 / 275;
@@ -32,7 +34,7 @@ const validationShema = yup.object({
 
 const LoginScreen = () => {
   const dispatch = useDispatch();
-  const {isLoggedIn, error, loading} = useSelector(state => state.login);
+  const {error, loading} = useSelector(state => state.login);
 
   const [showPassword, setShowPassword] = useState(false);
   const ShowPasswordHandler = () => {
@@ -42,7 +44,7 @@ const LoginScreen = () => {
   const SubmitHandle = values => {
     dispatch(PostLoginAction(values));
   };
-  
+
   return (
     <React.Fragment>
       <StatusBar hidden />
@@ -53,7 +55,6 @@ const LoginScreen = () => {
             source={require('../assets/image.jpg')}
           />
         </View>
-
         <View style={{borderTopLeftRadius: 80, flex: 1}}>
           <Formik
             initialValues={{
@@ -68,7 +69,6 @@ const LoginScreen = () => {
             }}>
             {({
               errors,
-              status,
               touched,
               values,
               handleChange,
@@ -86,70 +86,50 @@ const LoginScreen = () => {
                     </Text>
                   </View>
                   <View style={styles.inputContainer}>
-                    <View style={styles.inputContainerOne}>
-                      <View style={styles.iconContainer}>
-                        <Icon
-                          name="user-circle"
-                          size={25}
-                          color= {Colors.blue2}
-                        />
-                      </View>
-                      <View style={styles.inputContainerTwo}>
-                        <TextInput
-                          style={styles.input}
-                          placeholder="username"
-                          value={values.username}
-                          onBlur={handleBlur('username')}
-                          onChangeText={handleChange('username')}
-                          returnKeyType='next'
-                        />
-                      </View>
-                    </View>
-                    {errors.username && touched.username ? (
-                      <Text style={styles.errors}>{errors.username}</Text>
-                    ) : null}
-                    <View style={styles.inputContainerOne}>
-                      <View style={styles.iconContainer}>
-                        <Feather
-                          name="key"
-                          size={25}
-                          color= {Colors.blue2}
-                        />
-                      </View>
-                      <View style={styles.inputContainerTwo}>
-                        <TextInput
-                          style={styles.input}
-                          placeholder="password"
-                          value={values.password}
-                          onBlur={handleBlur('password')}
-                          secureTextEntry={showPassword ? false : true}
-                          onChangeText={handleChange('password')}
-                        />
-                      </View>
-                      <View style={styles.iconContainer}>
-                        <TouchableNativeFeedback onPress={ShowPasswordHandler}>
-                          {!showPassword ? (
-                            <Feather
-                              name="eye-off"
-                              color= {Colors.blue2}
-                              size={25}
-                            />
-                          ) : (
-                            <Feather
-                              name="eye"
-                              color= {Colors.blue2}
-                              size={25}
-                            />
-                          )}
-                        </TouchableNativeFeedback>
-                      </View>
-                    </View>
-                    {errors.password && touched.password ? (
-                      <Text style={styles.errors}>{errors.password}</Text>
-                    ) : null}
+                    <MyInput
+                      placeholder="username"
+                      name="user-circle"
+                      color={Colors.blue2}
+                      Icon={Icon}
+                      value={values.username}
+                      onBlur={handleBlur('username')}
+                      onChangeText={handleChange('username')}
+                      touched={touched.username}
+                      errors={errors.username}
+                    />
+                    <MyInput
+                      placeholder="password"
+                      secureTextEntry={showPassword ? false : true}
+                      name="key"
+                      color={Colors.blue2}
+                      Icon={Feather}
+                      value={values.password}
+                      onBlur={handleBlur('password')}
+                      onChangeText={handleChange('password')}
+                      touched={touched.password}
+                      errors={errors.password}
+                      >
+                      <TouchableNativeFeedback onPress={ShowPasswordHandler}>
+                        {!showPassword ? (
+                          <Feather
+                            name="eye-off"
+                            color={Colors.blue2}
+                            style={{marginVertical: 12}}
+                            size={25}
+                          />
+                        ) : (
+                          <Feather
+                            name="eye"
+                            color={Colors.blue2}
+                            style={{marginVertical: 12}}
+                            size={25}
+                          />
+                        )}
+                      </TouchableNativeFeedback>
+                    </MyInput>
                   </View>
-                  <View
-                    style={[
+                  <MyButton
+                    viewStyle={[
                       styles.button,
                       {
                         backgroundColor:
@@ -157,25 +137,17 @@ const LoginScreen = () => {
                             ? Colors.grey
                             : Colors.blue2,
                       },
-                    ]}>
-                    <TouchableOpacity
-                      disabled={!values.username || !values.password || loading}
-                      onPress={handleSubmit}>
-                      <Text style={styles.buttonText}>Login</Text>
-                    </TouchableOpacity>
-                  </View>
-                  {loading && (
-                    <View>
-                      <ActivityIndicator
-                        size="large"
-                        color={Colors.blue}
-                      />
-                    </View>
-                  )}
+                    ]}
+                    text="Login"
+                    disable={!values.username || !values.password || loading}
+                    onPress={handleSubmit}
+                    textStyle={styles.buttonText}
+                  />
+                  {loading && <Spinner color={Colors.blue} />}
                   {error && (
-                    <View >
-                      <Text style={[styles.errors,{marginTop:10}]}>{error}</Text>
-                    </View>
+                    <Text style={[styles.errors, {marginTop: 10}]}>
+                      {error}
+                    </Text>
                   )}
                 </View>
               </ImageBackground>
@@ -226,32 +198,10 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     padding: 10,
   },
-  inputContainerOne: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-  iconContainer: {
-    width: '10%',
-  },
-  inputContainerTwo: {
-    width: '75%',
-  },
-  input: {
-    margin: 10,
-    paddingHorizontal: 2,
-    paddingVertical: 5,
-    borderBottomColor: Colors.blue,
-    borderBottomWidth: 1,
-    borderRightColor: Colors.blue,
-    borderRightWidth: 2,
-    borderBottomRightRadius: 80,
-    fontSize:18
-  },
   button: {
     marginVertical: 5,
     borderRadius: 80,
     width: '35%',
-    // borderColor: 'black',
   },
   buttonText: {
     color: 'white',

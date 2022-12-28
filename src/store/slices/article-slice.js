@@ -1,12 +1,12 @@
-import { createSlice } from "@reduxjs/toolkit";
+import {createSlice} from '@reduxjs/toolkit';
 
 const articleSlice = createSlice({
-  name: "article",
+  name: 'article',
   initialState: {
     articles: [],
     filterArticles: [],
-    searchInput: "",
-    articleStatus: "",
+    searchInput: '',
+    articleStatus: '',
     error: null,
     loading: false,
     checkedEmpty: [],
@@ -18,24 +18,26 @@ const articleSlice = createSlice({
     allArticlesSuccess(state, action) {
       state.loading = false;
       state.error = null;
-      state.articleStatus = "success";
+      state.articleStatus = 'success';
       state.checkedEmpty = action.payload;
       state.articles = [...state.articles, ...action.payload];
     },
     allArticlesFailed(state, action) {
       state.loading = false;
       state.error = action.payload;
-      state.articleStatus = "failed";
+      state.articleStatus = 'failed';
     },
-    reflesh(state){
+    refresh(state) {
       state.articles = [];
       state.checkedEmpty = [];
-      state.articleStatus = "";
+      state.articleStatus = '';
+      state.filterArticles = [];
+      state.searchInput = '';
       state.error = null;
     },
     searchArticles(state, action) {
       state.searchInput = action.payload;
-      state.filterArticles = state.articles.filter((article) => {
+      state.filterArticles = state.articles.filter(article => {
         return (
           article.abstract
             .toString()

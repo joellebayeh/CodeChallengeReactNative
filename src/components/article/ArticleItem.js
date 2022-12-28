@@ -1,13 +1,15 @@
 import React from 'react';
 import {Text, View, StyleSheet, Dimensions, Linking} from 'react-native';
-import Colors from '../constants/colors';
+
+import Card from '../UI/Card';
+import Colors from '../../constants/colors';
 
 height = Dimensions.get('window').height;
 
 const ArticleItem = props => {
   const {headline, abstract, pub_date, web_url, source} = props.article;
   return (
-    <View style={styles.card}>
+    <Card style={{margin: height * 0.01,shadowColor: Colors.black}}>
       <Text style={styles.title}>{headline.main}</Text>
       <Text style={styles.abstract}>
         {abstract.substring(0, 200)}
@@ -22,22 +24,11 @@ const ArticleItem = props => {
           read more ...
         </Text>
       </View>
-    </View>
+    </Card>
   );
 };
 
 const styles = StyleSheet.create({
-  card: {
-    shadowColor: Colors.black,
-    shadowOpacity: 0.26,
-    shadowOffset: {width: 0, height: 2},
-    shadowRadius: 20,
-    elevation: 5,
-    borderRadius: 20,
-    backgroundColor: 'white',
-    padding: 5,
-    margin: height * 0.01,
-  },
   title: {
     textAlign: 'center',
     fontSize: 20,

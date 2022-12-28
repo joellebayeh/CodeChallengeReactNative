@@ -1,23 +1,19 @@
-import React, {useState} from 'react';
-import {
-  TextInput,
-  View,
-  StyleSheet,
-} from 'react-native';
-import Colors from '../constants/colors';
-
+import React from 'react';
+import {View, StyleSheet,TextInput} from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 
+import Colors from '../../constants/colors';
+
 const MySearchBar = props => {
-  const {onChangeText} = props
+  const {onChangeText} = props;
   return (
     <View style={styles.container}>
       <View style={styles.searchBar}>
         <Feather
           name="search"
-          size={20}
+          style={{marginVertical: 12}}
+          size={25}
           color={Colors.blue2}
-          style={{marginRight: 2}}
         />
         <TextInput
           style={styles.input}
