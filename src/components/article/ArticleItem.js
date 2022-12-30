@@ -21,7 +21,7 @@ const ArticleItem = props => {
           <Text style={styles.date}>{pub_date}</Text>
         </View>
         <Text style={styles.link} onPress={() => Linking.openURL(`${web_url}`)}>
-          read more ...
+          see more ...
         </Text>
       </View>
     </Card>

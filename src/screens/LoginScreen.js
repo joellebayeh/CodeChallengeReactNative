@@ -138,12 +138,12 @@ const LoginScreen = () => {
                             : Colors.blue2,
                       },
                     ]}
-                    text="Login"
-                    disable={!values.username || !values.password || loading}
+                    text="Login" 
+                    disabled={!values.username || !values.password || loading}
                     onPress={handleSubmit}
                     textStyle={styles.buttonText}
                   />
-                  {loading && <Spinner color={Colors.blue} />}
+                  {loading && <Spinner testID='spinner' color={Colors.blue} />}
                   {error && (
                     <Text style={[styles.errors, {marginTop: 10}]}>
                       {error}

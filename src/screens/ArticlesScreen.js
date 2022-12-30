@@ -55,7 +55,7 @@ const ArticlesScreen = () => {
         backgroundColor={Colors.blanchedalmond}
         barStyle="dark-content"
       />
-      <MySearchBar onChangeText={search} />
+      <MySearchBar onChangeText={search} value={searchInput}/>
       {articlesToDisplay.length === 0 && articleStatus === 'success' && (
         <Card style={[styles.card, {shadowColor: Colors.blue2}]}>
           <Text
@@ -91,7 +91,7 @@ const ArticlesScreen = () => {
               }
             : ()=>{
               setRefreshing(true);
-              if(page !== 0){
+              if(page !== 0 && !searchInput){
                 setPage(0);
                 dispatch(articleActions.refresh());
               }

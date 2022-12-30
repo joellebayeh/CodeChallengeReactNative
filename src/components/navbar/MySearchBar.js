@@ -1,25 +1,52 @@
-import React from 'react';
-import {View, StyleSheet,TextInput} from 'react-native';
+import React, {useState} from 'react';
+import {View, StyleSheet, TextInput} from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 import Colors from '../../constants/colors';
 
 const MySearchBar = props => {
-  const {onChangeText} = props;
+  const {onChangeText, value} = props;
+  const [cliked, setCliked] = useState(false);
+  const [inputValue, setInputValue] = useState(value);
+  console.log(cliked);
+
   return (
     <View style={styles.container}>
       <View style={styles.searchBar}>
         <Feather
           name="search"
-          style={{marginVertical: 12}}
           size={25}
           color={Colors.blue2}
         />
         <TextInput
           style={styles.input}
+          width={cliked ? '88%' : '94%'}
+          value={inputValue}
           placeholder="search..."
-          onChangeText={value => onChangeText(value)}
+          onChangeText={value => {
+            console.log('onChange');
+            onChangeText(value);
+            setInputValue(value);
+          }}
+          onFocus={() => {
+            setCliked(true);
+          }}
+          onBlur={() => {
+            setCliked(false);
+          }}
         />
+        {cliked && (
+          <Icon
+            name="close"
+            size={25}
+            color={Colors.blue2}
+            onPress={() => {
+              setInputValue('');
+              onChangeText('');
+            }}
+          />
+        )}
       </View>
     </View>
   );
@@ -44,10 +71,11 @@ const styles = StyleSheet.create({
     borderColor: Colors.blue,
     borderWidth: 1,
     alignItems: 'center',
+    justifyContent:'center'
   },
   input: {
     fontSize: 18,
-    width: '95%',
+    marginHorizontal:3
   },
 });
 

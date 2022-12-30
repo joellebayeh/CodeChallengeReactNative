@@ -6,9 +6,9 @@ const articleSlice = createSlice({
     articles: [],
     filterArticles: [],
     searchInput: '',
-    articleStatus: '',
     error: null,
     loading: false,
+    articleStatus:'',
     checkedEmpty: [],
   },
   reducers: {
@@ -18,22 +18,22 @@ const articleSlice = createSlice({
     allArticlesSuccess(state, action) {
       state.loading = false;
       state.error = null;
-      state.articleStatus = 'success';
+      state.articleStatus = "success";
       state.checkedEmpty = action.payload;
       state.articles = [...state.articles, ...action.payload];
     },
     allArticlesFailed(state, action) {
       state.loading = false;
       state.error = action.payload;
-      state.articleStatus = 'failed';
+      state.articleStatus = "failed";
     },
     refresh(state) {
       state.articles = [];
       state.checkedEmpty = [];
-      state.articleStatus = '';
       state.filterArticles = [];
       state.searchInput = '';
       state.error = null;
+      state.articleStatus = "";
     },
     searchArticles(state, action) {
       state.searchInput = action.payload;
